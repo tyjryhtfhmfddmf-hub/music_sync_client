@@ -1,7 +1,13 @@
-import tkinterdnd2 as tk
+# -----------------------------
+# IMPORTS
+# -----------------------------
+
+import os
+import random
+import pygame
+from tkinter import *
 from tkinter import filedialog, messagebox
-import pygame, random, os, json, requests, time, threading
-from tkinterdnd2 import DND_FILES, TkinterDnD
+from tkinterdnd2 import TkinterDnD
 
 # ---------------------------------------
 # CONFIGURATION
@@ -190,9 +196,6 @@ def handle_song_finished():
 # ---------------------------------------
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
-# Replace your Tk() with TkinterDnD.Tk() near the top of the app
-root = TkinterDnD.Tk()
-root.title("Music Sync App")
 
 queue_frame = Frame(root)
 queue_frame.pack(pady=10)
@@ -315,8 +318,8 @@ def poll_commands():
 # ---------------------------------------
 # TKINTER UI
 # ---------------------------------------
-root = tk.Tk()
-root.title("Music Sync - v3 (Network Ready)")
+root = TkinterDnD.Tk()
+root.title("Music Sync App")
 root.geometry("430x520")
 root.resizable(False, False)
 
