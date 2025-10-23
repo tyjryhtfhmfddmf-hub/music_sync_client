@@ -25,6 +25,9 @@ session_code = None
 is_host = False
 stop_polling = False
 
+root = TkinterDnD.Tk()
+root.title("Music Sync App")
+
 # ---------------------------------------
 # HELPER FUNCTIONS
 # ---------------------------------------
@@ -318,8 +321,8 @@ def poll_commands():
 # ---------------------------------------
 # TKINTER UI
 # ---------------------------------------
-root = TkinterDnD.Tk()
-root.title("Music Sync App")
+
+
 root.geometry("430x520")
 root.resizable(False, False)
 
