@@ -5,6 +5,7 @@
 import os
 import random
 import pygame
+import tkinter as tk
 from tkinter import *
 from tkinter import filedialog, messagebox
 from tkinterdnd2 import TkinterDnD
