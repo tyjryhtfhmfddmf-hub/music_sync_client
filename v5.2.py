@@ -464,7 +464,7 @@ stop_btn.grid(row=0, column=3, padx=5)
 bottom_frame = Frame(root)
 bottom_frame.pack(pady=10)
 loop_btn = Button(bottom_frame, text="Loop: OFF", command=toggle_loop)
-shuffle_btn = Button(bottom_frame, text="Shuffle: OFF", command=shuffle_playlist)
+shuffle_btn = Button(bottom_frame, text="Shuffle", command=shuffle_playlist)
 loop_btn.grid(row=0, column=0, padx=10)
 shuffle_btn.grid(row=0, column=1, padx=10)
 
