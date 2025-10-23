@@ -123,7 +123,7 @@ def next_song(auto=False):
         current_index = shuffled_order.pop(0)
     else:
         current_index = (current_index + 1) % len(playlist)
-      refresh_queue_view()
+        refresh_queue_view()
     load_song(playlist[current_index])
 
 def prev_song():
@@ -131,7 +131,7 @@ def prev_song():
     if not playlist:
         return
     current_index = (current_index - 1) % len(playlist)
-    refresh_queue_view()
+        refresh_queue_view()
     load_song(playlist[current_index])
 
 def stop_song():
@@ -150,7 +150,7 @@ def toggle_shuffle():
     global shuffle_mode, shuffled_order
     shuffle_mode = not shuffle_mode
     shuffled_order = []
-    refresh_queue_view()
+        refresh_queue_view()
     shuffle_btn.config(text=f"Shuffle: {'ON' if shuffle_mode else 'OFF'}")
     update_status(f"Shuffle {'enabled' if shuffle_mode else 'disabled'}")
 
