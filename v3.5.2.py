@@ -150,19 +150,29 @@ def toggle_shuffle():
     update_status(f"Shuffle {'enabled' if shuffle_mode else 'disabled'}")
 
 # ---------------------------------------
-# SONG END DETECTION
+# SONG END DETECTION (Tkinter-friendly)
 # ---------------------------------------
-def check_song_end():
-    """Check if current song finished, then go to next or loop."""
-    for event in pygame.event.get():
-        if event.type == SONG_END:
-            next_song(auto=True)
-    root.after(1000, check_song_end)
+last_playing_state = False
 
-# Register a pygame event for when song ends
-SONG_END = pygame.USEREVENT + 1
-pygame.mixer.music.set_endevent(SONG_END)
-shuffled_order = []
+def check_song_end():
+    global last_playing_state
+    is_playing = pygame.mixer.music.get_busy()
+
+    # Detect the transition from playing → not playing
+    if last_playing_state and not is_playing and not paused:
+        # Song finished naturally
+        handle_song_finished()
+
+    last_playing_state = is_playing
+    root.after(1000, check_song_end)  # check every second
+
+def handle_song_finished():
+    """Called automatically when a song ends."""
+    global loop_mode
+    if loop_mode:
+        pygame.mixer.music.play()
+    else:
+        next_song(auto=True)
 
 
 # ---------------------------------------
@@ -281,5 +291,6 @@ join_btn.grid(row=1, column=2, padx=5)
 status_label = tk.Label(root, text="Status: Idle", anchor="w")
 status_label.pack(fill="x", padx=10, pady=10)
 
+check_song_end()
 load_playlist()
 root.mainloop()
