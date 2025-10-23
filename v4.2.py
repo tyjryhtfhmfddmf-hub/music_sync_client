@@ -5,7 +5,6 @@
 import os
 import random
 import pygame
-import tkinter as tk
 from tkinter import *
 from tkinter import filedialog, messagebox
 from tkinterdnd2 import TkinterDnD
@@ -61,7 +60,7 @@ def load_playlist():
             with open(SAVE_FILE, "r") as f:
                 playlist = json.load(f)
                 for p in playlist:
-                    playlist_box.insert(tk.END, os.path.basename(p))
+                    playlist_box.insert(END, os.path.basename(p))
         except Exception as e:
             print("Failed to load playlist:", e)
 
@@ -73,7 +72,7 @@ def add_songs():
     for f in files:
         if f not in playlist:
             playlist.append(f)
-            playlist_box.insert(tk.END, os.path.basename(f))
+            playlist_box.insert(END, os.path.basename(f))
     save_playlist()
 
 def add_folder():
@@ -86,7 +85,7 @@ def add_folder():
             full = os.path.join(folder, file)
             if full not in playlist:
                 playlist.append(full)
-                playlist_box.insert(tk.END, file)
+                playlist_box.insert(END, file)
                 added += 1
     if added == 0:
         messagebox.showinfo("No Files", "No audio files found in that folder.")
@@ -334,47 +333,47 @@ def poll_commands():
 # ---------------------------------------
 
 
-playlist_box = tk.Listbox(root, width=55, height=10)
+playlist_box = Listbox(root, width=55, height=10)
 playlist_box.pack(pady=10)
 
-top_frame = tk.Frame(root)
+top_frame = Frame(root)
 top_frame.pack()
 
-add_btn = tk.Button(top_frame, text="Add Files", command=add_songs)
-add_folder_btn = tk.Button(top_frame, text="Add Folder", command=add_folder)
+add_btn = Button(top_frame, text="Add Files", command=add_songs)
+add_folder_btn = Button(top_frame, text="Add Folder", command=add_folder)
 add_btn.grid(row=0, column=0, padx=5)
 add_folder_btn.grid(row=0, column=1, padx=5)
 
-controls_frame = tk.Frame(root)
+controls_frame = Frame(root)
 controls_frame.pack(pady=10)
-prev_btn = tk.Button(controls_frame, text="⏮", command=prev_song)
-play_btn = tk.Button(controls_frame, text="▶️ / ⏸", command=play_pause_toggle)
-next_btn = tk.Button(controls_frame, text="⏭", command=next_song)
-stop_btn = tk.Button(controls_frame, text="⏹", command=stop_song)
+prev_btn = Button(controls_frame, text="⏮", command=prev_song)
+play_btn = Button(controls_frame, text="▶️ / ⏸", command=play_pause_toggle)
+next_btn = Button(controls_frame, text="⏭", command=next_song)
+stop_btn = Button(controls_frame, text="⏹", command=stop_song)
 prev_btn.grid(row=0, column=0, padx=5)
 play_btn.grid(row=0, column=1, padx=5)
 next_btn.grid(row=0, column=2, padx=5)
 stop_btn.grid(row=0, column=3, padx=5)
 
-bottom_frame = tk.Frame(root)
+bottom_frame = Frame(root)
 bottom_frame.pack(pady=10)
-loop_btn = tk.Button(bottom_frame, text="Loop: OFF", command=toggle_loop)
-shuffle_btn = tk.Button(bottom_frame, text="Shuffle: OFF", command=toggle_shuffle)
+loop_btn = Button(bottom_frame, text="Loop: OFF", command=toggle_loop)
+shuffle_btn = Button(bottom_frame, text="Shuffle: OFF", command=toggle_shuffle)
 loop_btn.grid(row=0, column=0, padx=10)
 shuffle_btn.grid(row=0, column=1, padx=10)
 
-network_frame = tk.LabelFrame(root, text="Network Sync")
+network_frame = LabelFrame(root, text="Network Sync")
 network_frame.pack(pady=10)
-host_btn = tk.Button(network_frame, text="Host Session", command=host_session)
-join_label = tk.Label(network_frame, text="Join Code:")
-join_entry = tk.Entry(network_frame, width=15)
-join_btn = tk.Button(network_frame, text="Join", command=join_session)
+host_btn = Button(network_frame, text="Host Session", command=host_session)
+join_label = Label(network_frame, text="Join Code:")
+join_entry = Entry(network_frame, width=15)
+join_btn = Button(network_frame, text="Join", command=join_session)
 host_btn.grid(row=0, column=0, padx=5, pady=5)
 join_label.grid(row=1, column=0)
 join_entry.grid(row=1, column=1, padx=5)
 join_btn.grid(row=1, column=2, padx=5)
 
-status_label = tk.Label(root, text="Status: Idle", anchor="w")
+status_label = Label(root, text="Status: Idle", anchor="w")
 status_label.pack(fill="x", padx=10, pady=10)
 
 check_song_end()
