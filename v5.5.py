@@ -371,15 +371,27 @@ def refresh_queue_view():
 def host_session():
     global session_code, is_host, stop_polling
     try:
-        res = requests.post(f"{RELAY_URL}/create_session")
-        data = res.json()
+        res = requests.post(f"{RELAY_URL}/create_session", timeout=5)
+        if res.status_code != 200:
+            update_status(f"Server error: {res.status_code}")
+            return
+        try:
+            data = res.json()
+        except ValueError:
+            update_status("Invalid server response (not JSON)")
+            print("Server replied with:", res.text)
+            return
         session_code = data.get("session_code")
+        if not session_code:
+            update_status("No session code returned from server.")
+            return
         is_host = True
         stop_polling = False
         update_status(f"Hosting Session: {session_code}")
-        threading.Thread(target=keep_session_alive, daemon=True).start()  # 👈 added
+        threading.Thread(target=keep_session_alive, daemon=True).start()
     except Exception as e:
         update_status(f"Error hosting: {e}")
+
 
 def join_session():
     global session_code, is_host, stop_polling
