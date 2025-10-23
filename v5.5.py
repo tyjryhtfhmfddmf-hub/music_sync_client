@@ -371,7 +371,7 @@ def refresh_queue_view():
 def host_session():
     global session_code, is_host, stop_polling
     try:
-        res = requests.post(f"{RELAY_URL}/create_session", timeout=5)
+        res = requests.post(f"{RELAY_URL}/create_session", timeout=50)
         if res.status_code != 200:
             update_status(f"Server error: {res.status_code}")
             return
