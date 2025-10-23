@@ -17,7 +17,7 @@ from tkinter import simpledialog, messagebox
 # -----------------------------
 root = TkinterDnD.Tk()
 root.title("Music Sync App")
-root.geometry("500x600")  # Optional: Set window size
+root.geometry("500x1200")  # Optional: Set window size
 root.resizable(False, False)
 
 # ---------------------------------------
