@@ -32,7 +32,6 @@ pygame.mixer.init()
 LIBRARY_FILE = "library.json"
 PLAYLISTS_DIR = "playlists"
 os.makedirs(PLAYLISTS_DIR, exist_ok=True)
-
 current_index = 0
 paused = False
 shuffle_mode = False
@@ -40,7 +39,6 @@ loop_mode = False
 session_code = None
 is_host = False
 stop_polling = False
-
 
 
 # ---------------------------------------
@@ -469,5 +467,5 @@ status_label = Label(root, text="Status: Idle", anchor="w")
 status_label.pack(fill="x", padx=10, pady=10)
 
 check_song_end()
-load_playlist()
+load_library()
 root.mainloop()
