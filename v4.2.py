@@ -1,6 +1,7 @@
-import tkinter as tk
+import tkinterdnd2 as tk
 from tkinter import filedialog, messagebox
 import pygame, random, os, json, requests, time, threading
+from tkinterdnd2 import DND_FILES, TkinterDnD
 
 # ---------------------------------------
 # CONFIGURATION
