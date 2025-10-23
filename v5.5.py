@@ -27,7 +27,7 @@ root.resizable(False, False)
 
 
 
-RELAY_URL = "https://music-sync-relay.onrender.com/"   # change this to your deployed relay
+RELAY_URL = "https://music-sync-relay.onrender.com"   # change this to your deployed relay
 pygame.mixer.init()
 
 LIBRARY_FILE = "library.json"
