@@ -33,9 +33,6 @@ LIBRARY_FILE = "library.json"
 PLAYLISTS_DIR = "playlists"
 os.makedirs(PLAYLISTS_DIR, exist_ok=True)
 
-
-playlist = []
-
 current_index = 0
 paused = False
 shuffle_mode = False
@@ -67,6 +64,7 @@ def save_library():
 
 
 
+playlist = []
 library = load_library()
 
 
