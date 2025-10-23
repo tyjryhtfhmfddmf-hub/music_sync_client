@@ -9,9 +9,21 @@ from tkinter import *
 from tkinter import filedialog, messagebox
 from tkinterdnd2 import TkinterDnD
 
+
+# -----------------------------
+# ROOT WINDOW
+# -----------------------------
+root = TkinterDnD.Tk()
+root.title("Music Sync App")
+root.geometry("500x600")  # Optional: Set window size
+root.resizable(False, False)
+
 # ---------------------------------------
 # CONFIGURATION
 # ---------------------------------------
+
+
+
 RELAY_URL = "https://your-relay-server.onrender.com"   # change this to your deployed relay
 SAVE_FILE = "playlist.json"
 pygame.mixer.init()
@@ -25,8 +37,6 @@ session_code = None
 is_host = False
 stop_polling = False
 
-root = TkinterDnD.Tk()
-root.title("Music Sync App")
 
 # ---------------------------------------
 # HELPER FUNCTIONS
@@ -322,9 +332,6 @@ def poll_commands():
 # TKINTER UI
 # ---------------------------------------
 
-
-root.geometry("430x520")
-root.resizable(False, False)
 
 playlist_box = tk.Listbox(root, width=55, height=10)
 playlist_box.pack(pady=10)
