@@ -429,17 +429,18 @@ def process_command(cmd):
     elif cmd == "stop":
         stop_song()
 
-
-def keep_session_alive():
-    """Pings the relay server every 5 minutes to prevent timeouts."""
-    global stop_polling, session_code
-    while not stop_polling and session_code:
+# ---------- KEEP ALIVE ----------
+def keep_alive():
+    while session_active:
         try:
-            requests.post(f"{RELAY_URL}/ping", json={"session_code": session_code}, timeout=5)
-            print(f"[Ping] Session {session_code} kept alive")
+            requests.get(f"{RELAY_URL}/ping", timeout=5)
+            print("🟢 Relay pinged (alive)")
         except Exception as e:
-            print(f"[Ping Error]: {e}")
-        time.sleep(300)  # 5 minutes
+            print("🔴 Ping failed:", e)
+        time.sleep(KEEP_ALIVE_INTERVAL)
+
+def start_keep_alive():
+    threading.Thread(target=keep_alive, daemon=True).start()
 
 
 
