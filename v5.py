@@ -35,7 +35,6 @@ os.makedirs(PLAYLISTS_DIR, exist_ok=True)
 
 
 playlist = []
-library = load_library()
 
 current_index = 0
 paused = False
@@ -68,11 +67,7 @@ def save_library():
 
 
 
-
-
-
-
-
+library = load_library()
 
 
 def update_status(text):
