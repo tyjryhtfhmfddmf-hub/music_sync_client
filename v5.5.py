@@ -6,6 +6,7 @@ import os
 import random
 import pygame
 import json
+import threading, time, requests
 from tkinter import *
 from tkinter import filedialog, messagebox
 from tkinterdnd2 import TkinterDnD
@@ -376,6 +377,7 @@ def host_session():
         is_host = True
         stop_polling = False
         update_status(f"Hosting Session: {session_code}")
+        threading.Thread(target=keep_session_alive, daemon=True).start()  # 👈 added
     except Exception as e:
         update_status(f"Error hosting: {e}")
 
@@ -390,6 +392,7 @@ def join_session():
     stop_polling = False
     update_status(f"Joined Session: {session_code}")
     threading.Thread(target=poll_commands, daemon=True).start()
+    threading.Thread(target=keep_session_alive, daemon=True).start()  # 👈 added
 
 def send_command(cmd, index=None):
     if not session_code:
@@ -428,6 +431,21 @@ def poll_commands():
         except:
             pass
         time.sleep(1)
+
+
+def keep_session_alive():
+    """Pings the relay server every 5 minutes to prevent timeouts."""
+    global stop_polling, session_code
+    while not stop_polling and session_code:
+        try:
+            requests.post(f"{RELAY_URL}/ping", json={"session_code": session_code}, timeout=5)
+            print(f"[Ping] Session {session_code} kept alive")
+        except Exception as e:
+            print(f"[Ping Error]: {e}")
+        time.sleep(300)  # 5 minutes
+
+
+
 
 # ---------------------------------------
 # TKINTER UI
