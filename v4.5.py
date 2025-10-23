@@ -38,6 +38,7 @@ is_host = False
 stop_polling = False
 
 
+
 # ---------------------------------------
 # HELPER FUNCTIONS
 # ---------------------------------------
@@ -248,7 +249,9 @@ def on_drag_drop(event):
         current_index = playlist.index(current_song)
 
     refresh_queue_view()
+    queue_list.select_clear(0, END)
     queue_list.select_set(drop_index)
+    queue_list.see(current_index)
     drag_start_index = None
 
 # Bind events
