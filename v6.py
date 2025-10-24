@@ -264,6 +264,39 @@ def shuffle_playlist():
     update_status("Playlist shuffled.")
 
 
+### music volume
+
+def set_volume(value):
+    """Set the playback volume (0.0 to 1.0)."""
+    try:
+        pygame.mixer.music.set_volume(value)
+        update_status(f"Volume: {int(float(value) * 100)}%")
+    except Exception as e:
+        update_status(f"Volume error: {e}")
+
+try:
+    with open("settings.json", "r") as f:
+        settings = json.load(f)
+        last_volume = settings.get("volume", 0.7)
+        pygame.mixer.music.set_volume(last_volume)
+        volume_slider.set(last_volume)
+except FileNotFoundError:
+    pygame.mixer.music.set_volume(0.7)
+
+def set_volume(value):
+    try:
+        val = float(value)
+        pygame.mixer.music.set_volume(val)
+        with open("settings.json", "w") as f:
+            json.dump({"volume": val}, f)
+        update_status(f"Volume: {int(val * 100)}%")
+    except Exception as e:
+        update_status(f"Volume error: {e}")
+
+
+
+
+
 # ---------------------------------------
 # SONG END DETECTION (Tkinter-friendly)
 # ---------------------------------------
