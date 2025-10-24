@@ -264,7 +264,14 @@ def shuffle_playlist():
     update_status("Playlist shuffled.")
 
 
-### music volume
+# --------------- Volume Control ---------------
+volume_label = Label(root, text="Volume:")
+volume_label.pack(pady=5)
+
+volume_slider = ttk.Scale(root, from_=0, to=1, orient="horizontal", value=0.7, length=200,
+                          command=lambda v: set_volume(float(v)))
+volume_slider.pack()
+
 
 def set_volume(value):
     """Set the playback volume (0.0 to 1.0)."""
