@@ -430,11 +430,19 @@ def join_session():
     if not code:
         status_label.config(text="Please enter a room code.")
         return
-    room_code = code
-    status_label.config(text=f"Joined room: {room_code}")
-    session_active = True
-    start_keep_alive()
-    threading.Thread(target=poll_commands, daemon=True).start()
+    try:
+        res = requests.post(f"{RELAY_URL}/join/{code}", timeout=5)
+        if res.status_code == 200:
+            room_code = code
+            status_label.config(text=f"Joined room: {room_code}")
+            session_active = True
+            start_keep_alive()
+            threading.Thread(target=poll_commands, daemon=True).start()
+        else:
+            status_label.config(text="Room not found.")
+    except Exception as e:
+        status_label.config(text=f"Join failed: {e}")
+
 
 def send_command(command):
     if not room_code:
