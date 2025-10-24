@@ -10,7 +10,7 @@ import threading, time, requests
 from tkinter import *
 from tkinter import filedialog, messagebox
 from tkinterdnd2 import TkinterDnD
-from tkinter import simpledialog, messagebox
+from tkinter import simpledialog, ttk
 
 
 # -----------------------------
