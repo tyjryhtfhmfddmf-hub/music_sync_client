@@ -542,28 +542,17 @@ def sync_current_playlist():
 def compare_libraries():
     """Request library comparison from all clients."""
     if not room_code or not session_active:
-        update_status("Not in a network session")
+        messagebox.showinfo("Not Connected", "You must be in a network session to compare libraries.")
         return
     
     if not library:
         messagebox.showinfo("Empty Library", "Your library is empty. Add some songs first!")
         return
     
-    # Send our library first, then request theirs
-    library_filenames = [os.path.basename(song) for song in library]
-    
-    comparison_data = {
-        "library_count": len(library),
-        "library_filenames": library_filenames
-    }
-    
-    # Send our library data
-    send_command("library_comparison", data=comparison_data)
-    
-    # Also request their library
+    # Request library from others
     send_command("request_library")
     
-    update_status("Library comparison sent. Waiting for response...")
+    update_status("Requesting library from other clients...")
 
 
 def send_library_comparison():
@@ -815,11 +804,13 @@ def process_command(cmd_data):
             save_playlist()
             update_status("Playlist synced successfully!")
     elif command == "request_library":
-        # Send our library back
+        # Someone requested our library, send it back
         send_library_comparison()
     elif command == "library_comparison" and data is not None:
-        # Show library comparison results
+        # Received someone's library, show comparison and send ours back
         show_library_comparison(data)
+        # Auto-reply with our library so they can see the comparison too
+        send_library_comparison()
 
 
 def keep_alive():
