@@ -766,12 +766,30 @@ def poll_commands():
     global session_active
     consecutive_errors = 0
     max_consecutive_errors = 3
+    last_poll_timestamp = 0  # <-- NEW: Track last poll time
     
     while session_active:
         try:
-            res = requests.get(f"{RELAY_URL}/receive/{room_code}", timeout=10)
+            # <-- MODIFIED: Send 'since' timestamp
+            res = requests.get(
+                f"{RELAY_URL}/receive/{room_code}?since={last_poll_timestamp}", 
+                timeout=10
+            )
+            
             data = res.json()
             commands = data.get("commands", [])
+            
+            # <-- NEW: Update timestamp to server's time
+            # We use the server's returned time to avoid clock-skew issues
+            new_timestamp = data.get("timestamp")
+            if new_timestamp:
+                last_poll_timestamp = new_timestamp
+            else:
+                # Fallback in case 'timestamp' is missing
+                print("⚠️ Server did not return a timestamp, using local time.")
+                last_poll_timestamp = time.time()
+
+            
             if commands:
                 print(f"📥 Received {len(commands)} command(s)")
             for cmd_data in commands:
