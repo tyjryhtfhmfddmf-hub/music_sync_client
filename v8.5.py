@@ -555,7 +555,7 @@ def compare_libraries():
     update_status("Requesting library from other clients...")
 
 
-def send_library_comparison():
+def send_library_comparison(is_reply=False):
     """Send our library info for comparison."""
     if not room_code or not session_active:
         print("⚠️ Cannot send library: Not in active session")
@@ -570,11 +570,13 @@ def send_library_comparison():
     
     comparison_data = {
         "library_count": len(library),
-        "library_filenames": library_filenames
+        "library_filenames": library_filenames,
+        "is_reply": is_reply  # <-- Add the flag to the data payload
     }
     
     send_command("library_comparison", data=comparison_data)
-    print(f"✅ Sent library comparison: {len(library)} songs")
+    # Added is_reply to the print statement for better debugging
+    print(f"✅ Sent library comparison: {len(library)} songs (is_reply: {is_reply})")
 
 
 def compare_playlists(received_playlist):
