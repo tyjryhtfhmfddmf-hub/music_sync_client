@@ -108,14 +108,14 @@ def add_songs():
         if f not in library:
             library.append(f)
             added += 1
-        if f not in playlist:
-            playlist.append(f)
+        # REMOVED the lines that added to the playlist
 
     save_library()
-    save_playlist()
+    # REMOVED save_playlist()
     refresh_library_view()
-    refresh_queue_view()
+    # REMOVED refresh_queue_view()
     update_status(f"Added {added} new songs to library.")
+
 
 
 def add_folder():
@@ -131,13 +131,12 @@ def add_folder():
         if path not in library:
             library.append(path)
             added += 1
-        if path not in playlist:
-            playlist.append(path)
+        # REMOVED the lines that added to the playlist
 
     save_library()
-    save_playlist()
+    # REMOVED save_playlist()
     refresh_library_view()
-    refresh_queue_view()
+    # REMOVED refresh_queue_view()
     update_status(f"Added {added} new songs from folder.")
 
 
