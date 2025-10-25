@@ -423,7 +423,6 @@ def check_song_end():
     if playlist and 0 <= current_index < len(playlist):
         queue_list.select_clear(0, END)
         queue_list.select_set(current_index)
-        queue_list.see(current_index)
 
     if last_playing_state and not is_playing and not paused:
         handle_song_finished()
