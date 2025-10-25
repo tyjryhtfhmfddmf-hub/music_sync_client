@@ -614,12 +614,29 @@ def show_library_comparison(data):
     only_remote = remote_filenames - local_filenames
     common = local_filenames & remote_filenames
     
+    # --- FIX 1: Ignore self-comparison ---
+    # If there are no differences in either direction,
+    # it means we are comparing our library to itself.
+    if not only_local and not only_remote:
+        print("✅ Ignoring self-comparison library report.")
+        return  # Don't show a popup for our own library!
+    # --- END FIX 1 ---
+
+    # --- FIX 2: Improved percentage calculation ---
+    # Calculate percentage relative to *our* library
+    local_percent = int(len(common) / max(len(local_filenames), 1) * 100)
+    # Calculate percentage relative to *their* library
+    remote_percent = int(len(common) / max(remote_count, 1) * 100)
+
     # Create comparison message
     msg = f"📊 Library Comparison Results\n"
     msg += f"{'='*50}\n\n"
     msg += f"Your library: {len(library)} songs\n"
     msg += f"Their library: {remote_count} songs\n"
-    msg += f"Songs in common: {len(common)} ({int(len(common)/max(len(local_filenames), 1)*100)}%)\n\n"
+    msg += f"Songs in common: {len(common)}\n"
+    msg += f"  • That's {local_percent}% of YOUR library\n"
+    msg += f"  • That's {remote_percent}% of THEIR library\n\n"
+    # --- END FIX 2 ---
     
     if only_local:
         msg += f"🎵 Songs only YOU have: {len(only_local)}\n"
@@ -663,7 +680,7 @@ def show_library_comparison(data):
     Button(comparison_window, text="Close", command=comparison_window.destroy, width=15).pack(pady=10)
     
     update_status("Library comparison complete")
-
+    
 
 def wake_up_server():
     """Manually wake up the relay server."""
