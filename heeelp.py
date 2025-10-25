@@ -555,7 +555,7 @@ def compare_libraries():
     update_status("Requesting library from other clients...")
 
 
-def send_library_comparison():
+def send_library_comparison(is_reply=False):
     """Send our library info for comparison."""
     if not room_code or not session_active:
         print("⚠️ Cannot send library: Not in active session")
