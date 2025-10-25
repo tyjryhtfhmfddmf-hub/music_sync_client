@@ -557,6 +557,8 @@ def compare_libraries():
 
 def send_library_comparison(is_reply=False):
     """Send our library info for comparison."""
+    global library_sent_to_room
+    
     if not room_code or not session_active:
         print("⚠️ Cannot send library: Not in active session")
         return
@@ -565,16 +567,27 @@ def send_library_comparison(is_reply=False):
         print("⚠️ Cannot send library: Library is empty")
         return
     
+    # Prevent sending multiple times to the same room in a short period (only for non-replies)
+    if room_code in library_sent_to_room and not is_reply:
+        print("⚠️ Already sent library to this room, skipping to prevent loop")
+        return
+    
     # Get just the filenames for comparison
     library_filenames = [os.path.basename(song) for song in library]
     
     comparison_data = {
         "library_count": len(library),
-        "library_filenames": library_filenames
+        "library_filenames": library_filenames,
+        "is_reply": is_reply  # Mark if this is a reply to prevent loops
     }
     
     send_command("library_comparison", data=comparison_data)
-    print(f"✅ Sent library comparison: {len(library)} songs")
+    
+    # Only mark as sent if it's not a reply (replies can happen multiple times)
+    if not is_reply:
+        library_sent_to_room.add(room_code)
+    
+    print(f"✅ Sent library comparison: {len(library)} songs (is_reply: {is_reply})")
 
 
 def compare_playlists(received_playlist):
