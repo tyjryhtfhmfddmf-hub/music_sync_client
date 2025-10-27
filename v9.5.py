@@ -158,6 +158,26 @@ def on_library_double_click(event):
             update_status(f"Already in queue: {os.path.basename(song_path)}")
 
 
+
+def add_selected_to_queue():
+    """Add the selected song from the library to the 'Up Next' queue."""
+    selection = playlist_box.curselection()
+    if not selection:
+        messagebox.showinfo("Add Song", "Please select a song from the library to add.")
+        return
+    
+    index = selection[0]
+    if index < len(library):
+        song_path = library[index]
+        if song_path not in playlist:
+            playlist.append(song_path)
+            save_playlist()
+            refresh_queue_view()
+            update_status(f"Added to queue: {os.path.basename(song_path)}")
+        else:
+            update_status(f"Already in queue: {os.path.basename(song_path)}")
+
+
 def save_current_as_playlist():
     if not playlist:
         messagebox.showinfo("Save Playlist", "No songs in the queue to save.")
@@ -315,6 +335,37 @@ def shuffle_playlist():
     update_status("Playlist shuffled.")
 
 
+
+
+
+def remove_from_queue():
+    """Remove the selected song from the 'Up Next' queue."""
+    global current_index
+    
+    selection = queue_list.curselection()
+    if not selection:
+        messagebox.showinfo("Remove Song", "Please select a song from the 'Up Next' queue to remove.")
+        return
+    
+    index_to_remove = selection[0]
+    
+    # Check if we are removing the currently playing song
+    if index_to_remove == current_index:
+        stop_song() # Stop playback
+        current_index = -1 # Reset current_index
+        
+    # Pop the song from the playlist
+    removed_song = playlist.pop(index_to_remove)
+    
+    # Adjust current_index if a song *before* the playing song was removed
+    if current_index > index_to_remove:
+        current_index -= 1
+        
+    refresh_queue_view()
+    save_playlist()
+    update_status(f"Removed from queue: {os.path.basename(removed_song)}")
+
+
 # --------------- Volume Control ---------------
 volume_frame = Frame(root)
 volume_frame.pack(pady=5)
@@ -448,8 +499,20 @@ queue_frame.pack(pady=10)
 
 Label(queue_frame, text="🎵 Up Next (Drag to Reorder)").pack()
 
-queue_list = Listbox(queue_frame, width=50, selectmode=SINGLE)
-queue_list.pack()
+# --- NEW FRAME for listbox + button ---
+queue_list_frame = Frame(queue_frame)
+queue_list_frame.pack()
+
+queue_list = Listbox(queue_list_frame, width=48, height=10, selectmode=SINGLE) # Adjusted width/height
+queue_list.pack(side=LEFT, fill=Y)
+
+# --- NEW BUTTON ---
+remove_btn_frame = Frame(queue_list_frame)
+remove_btn_frame.pack(side=LEFT, fill=Y, padx=(5,0))
+
+remove_from_queue_btn = Button(remove_btn_frame, text="✖", command=remove_from_queue, font=("Arial", 14), width=2, fg="red")
+remove_from_queue_btn.pack(anchor="center", expand=True)
+# --- END NEW BUTTON ---
 
 drag_start_index = None
 
@@ -954,13 +1017,28 @@ def start_keep_alive():
 # TKINTER UI
 # ---------------------------------------
 
+# ---------------------------------------
+# TKINTER UI
+# ---------------------------------------
+
 # Library Section
-library_frame = LabelFrame(root, text="📚 Library (Double-click to add to queue)")
+library_frame = LabelFrame(root, text="📚 Library") # Updated text
 library_frame.pack(pady=5, padx=10, fill=BOTH)
 
-playlist_box = Listbox(library_frame, width=55, height=8)
-playlist_box.pack(pady=5)
+# Create a sub-frame to hold listbox and button
+lib_list_frame = Frame(library_frame)
+lib_list_frame.pack(pady=5, padx=5, fill=X)
+
+playlist_box = Listbox(lib_list_frame, width=52, height=8) # Slightly reduced width
+playlist_box.pack(side=LEFT, fill=BOTH, expand=True)
 playlist_box.bind("<Double-Button-1>", on_library_double_click)
+
+# Add a frame for the add button
+lib_btn_frame = Frame(lib_list_frame)
+lib_btn_frame.pack(side=LEFT, fill=Y, padx=(5,0))
+
+add_to_queue_btn = Button(lib_btn_frame, text="✚", command=add_selected_to_queue, font=("Arial", 16), width=2)
+add_to_queue_btn.pack(anchor="center", expand=True)
 
 top_frame = Frame(root)
 top_frame.pack()
