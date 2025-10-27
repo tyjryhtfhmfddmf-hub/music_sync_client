@@ -570,19 +570,19 @@ def refresh_queue_view():
 # LIBRARY & PLAYLIST SYNC FUNCTIONS
 # ---------------------------------------
 
-def sync_current_playlist():
-    """Send current playlist to all connected clients."""
+def sync_current_queue():
+    """Send current 'Up Next' queue to all connected clients."""
     if not room_code or not session_active:
         update_status("Not in a network session")
         return
     
     if not playlist:
-        messagebox.showinfo("No Playlist", "No songs in queue to share.")
+        messagebox.showinfo("No Queue", "No songs in the 'Up Next' queue to share.")
         return
     
     # Confirm before sending
     response = messagebox.askyesno(
-        "Share Playlist",
+        "Share Queue",
         f"Share your current queue ({len(playlist)} songs) with all connected clients?"
     )
     
@@ -595,8 +595,8 @@ def sync_current_playlist():
     }
     
     send_command("sync_playlist", data=playlist_data)
-    messagebox.showinfo("Playlist Shared", f"Your playlist ({len(playlist)} songs) has been shared!")
-    update_status(f"Playlist synced ({len(playlist)} songs)")
+    messagebox.showinfo("Queue Shared", f"Your current queue ({len(playlist)} songs) has been shared!")
+    update_status(f"Current queue synced ({len(playlist)} songs)")
 
 
 def compare_libraries():
