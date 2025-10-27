@@ -471,10 +471,9 @@ def check_song_end():
     global last_playing_state
     is_playing = pygame.mixer.music.get_busy()
     
-    if playlist and 0 <= current_index < len(playlist):
-        queue_list.select_clear(0, END)
-        queue_list.select_set(current_index)
-
+    # REMOVED the two lines that force-select the current song
+    # The "▶" icon in refresh_queue_view() is the only indicator we need.
+    
     if last_playing_state and not is_playing and not paused:
         handle_song_finished()
 
