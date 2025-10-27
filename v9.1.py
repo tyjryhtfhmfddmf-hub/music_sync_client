@@ -878,19 +878,28 @@ def process_command(cmd_data):
             paused = False
             refresh_queue_view()
             update_status(f"Previous: {os.path.basename(playlist[current_index])}")
-    elif command == "sync_playlist":
+   elif command == "sync_playlist":
         if data is not None:
             # Receive synced playlist
             received_playlist = data.get("playlist", [])
             received_index = data.get("current_index", 0)
             
+            # --- THIS IS THE FIX ---
+            # If the received playlist is identical to our current one,
+            # we are the sender (or already in sync). Ignore it.
+            if received_playlist == playlist:
+                print("✅ Ignoring self-sent or identical playlist sync.")
+                return
+            # --- END FIX ---
+
             # Compare and show what's missing
             compare_playlists(received_playlist)
             
             # Ask user if they want to adopt the synced playlist
             response = messagebox.askyesno(
                 "Sync Playlist",
-                f"Host is sharing their playlist ({len(received_playlist)} songs).\n\n"
+                # Updated text to be more generic
+                f"A new playlist is being shared ({len(received_playlist)} songs).\n\n"
                 "Do you want to sync your queue to match?"
             )
             
