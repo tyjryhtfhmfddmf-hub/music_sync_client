@@ -599,6 +599,70 @@ def sync_current_queue():
     update_status(f"Current queue synced ({len(playlist)} songs)")
 
 
+
+def share_saved_playlist():
+    """Share a saved .json playlist from the /playlists folder."""
+    if not room_code or not session_active:
+        update_status("Not in a network session")
+        messagebox.showerror("Not Connected", "You must be in a network session to share a playlist.")
+        return
+
+    # Get list of saved playlists
+    files = [f for f in os.listdir(PLAYLISTS_DIR) if f.endswith(".json")]
+    if not files:
+        messagebox.showinfo("No Playlists", "No saved playlists found in the 'playlists' folder.")
+        return
+
+    # Ask user which one to share
+    name = simpledialog.askstring(
+        "Share Saved Playlist",
+        "Available playlists:\n" + "\n".join(files) + "\n\nEnter playlist name (without .json):"
+    )
+
+    if not name:
+        return  # User cancelled
+
+    filepath = os.path.join(PLAYLISTS_DIR, f"{name}.json")
+    if not os.path.exists(filepath):
+        messagebox.showerror("Error", f"Playlist '{name}.json' not found.")
+        return
+
+    # Load the playlist data from the file
+    try:
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        saved_playlist_songs = data.get("songs", [])
+        if not saved_playlist_songs:
+            messagebox.showwarning("Empty Playlist", "This playlist file contains no songs.")
+            return
+        
+        # Confirm before sending
+        response = messagebox.askyesno(
+            "Confirm Share",
+            f"Share the saved playlist '{name}' ({len(saved_playlist_songs)} songs) with all clients?"
+        )
+        
+        if not response:
+            return
+        
+        # Send the command with the playlist data
+        playlist_data = {
+            "playlist": saved_playlist_songs,
+            "current_index": 0  # Always start shared playlists from the beginning
+        }
+        
+        send_command("sync_playlist", data=playlist_data)
+        messagebox.showinfo("Playlist Shared", f"Saved playlist '{name}' has been shared!")
+        update_status(f"Shared saved playlist: {name}")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Failed to read playlist file: {e}")
+        print(f"❌ Error reading playlist file: {e}")
+
+
+
+
 def compare_libraries():
     """Request library comparison from all clients."""
     if not room_code or not session_active:
@@ -1103,14 +1167,16 @@ sync_frame.grid(row=2, column=0, columnspan=3, pady=5)
 
 Label(sync_frame, text="Sync Options:").pack(side=LEFT, padx=5)
 
-sync_playlist_btn = Button(sync_frame, text="📤 Share Playlist", command=sync_current_playlist)
-sync_playlist_btn.pack(side=LEFT, padx=5)
+# --- Button for current queue ---
+sync_queue_btn = Button(sync_frame, text="📤 Share Current Queue", command=sync_current_queue)
+sync_queue_btn.pack(side=LEFT, padx=5)
+
+# --- Button for saved playlists ---
+share_saved_btn = Button(sync_frame, text="📂 Share Saved Playlist", command=share_saved_playlist)
+share_saved_btn.pack(side=LEFT, padx=5)
 
 compare_lib_btn = Button(sync_frame, text="📊 Compare Libraries", command=compare_libraries)
 compare_lib_btn.pack(side=LEFT, padx=5)
-
-status_label = Label(root, text="Status: Idle", anchor="w")
-status_label.pack(fill="x", padx=10, pady=10)
 
 # Initialize the app with saved data
 refresh_library_view()
