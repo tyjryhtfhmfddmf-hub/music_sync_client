@@ -878,7 +878,7 @@ def process_command(cmd_data):
             paused = False
             refresh_queue_view()
             update_status(f"Previous: {os.path.basename(playlist[current_index])}")
-   elif command == "sync_playlist":
+    elif command == "sync_playlist":
         if data is not None:
             # Receive synced playlist
             received_playlist = data.get("playlist", [])
