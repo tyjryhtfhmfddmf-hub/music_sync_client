@@ -25,7 +25,7 @@ root.resizable(False, False)
 
 
 playlist = []
-library = load_library()
+library = update_library_view()
 current_library_view = []
 
 
@@ -56,7 +56,7 @@ is_host = False
 # HELPER FUNCTIONS
 # ---------------------------------------
 
-def load_library():
+def :
     if os.path.exists(LIBRARY_FILE):
         with open(LIBRARY_FILE, "r", encoding="utf-8") as f:
             try:
