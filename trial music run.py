@@ -18,8 +18,16 @@ from tkinter import simpledialog, ttk
 # -----------------------------
 root = TkinterDnD.Tk()
 root.title("Music Sync App")
+search_var = StringVar(root) # <-- NEW
 root.geometry("500x800")
 root.resizable(False, False)
+
+
+
+playlist = []
+library = load_library()
+current_library_view = []
+
 
 # ---------------------------------------
 # CONFIGURATION
@@ -82,8 +90,6 @@ def load_saved_playlist():
     return [], 0
 
 
-playlist = []
-library = load_library()
 
 
 status_label = Label(root, text="Status: Idle", anchor="w")
@@ -92,12 +98,28 @@ status_label.pack(fill="x", padx=10, pady=10)
 def update_status(text):
     status_label.config(text=f"Status: {text}")
 
-
-def refresh_library_view():
-    """Refresh the library listbox to show all songs in the library."""
+def update_library_view(*args):
+    """Update the library listbox based on the search query."""
+    global current_library_view
+    
+    search_term = search_var.get().lower()
+    
+    # Filter the main library to create the new view
+    if not search_term:
+        current_library_view = library.copy()
+    else:
+        current_library_view = [
+            song for song in library 
+            if search_term in os.path.basename(song).lower()
+        ]
+        
+    # Refresh the listbox
     playlist_box.delete(0, END)
-    for song in library:
-        playlist_box.insert(END, os.path.basename(song))
+    if not current_library_view:
+        playlist_box.insert(END, "No matching songs found.")
+    else:
+        for song in current_library_view:
+            playlist_box.insert(END, os.path.basename(song))
 
 
 def add_songs():
@@ -115,7 +137,7 @@ def add_songs():
 
     save_library()
     # REMOVED save_playlist()
-    refresh_library_view()
+    update_library_view()
     # REMOVED refresh_queue_view()
     update_status(f"Added {added} new songs to library.")
 
@@ -138,7 +160,7 @@ def add_folder():
 
     save_library()
     # REMOVED save_playlist()
-    refresh_library_view()
+    update_library_view()
     # REMOVED refresh_queue_view()
     update_status(f"Added {added} new songs from folder.")
 
@@ -150,8 +172,8 @@ def on_library_double_click(event):
         return
     
     index = selection[0]
-    if index < len(library):
-        song_path = library[index]
+    if index < len(current_library_view):
+        song_path = current_library_view[index]
         if song_path not in playlist:
             playlist.append(song_path)
             save_playlist()
@@ -170,8 +192,8 @@ def add_selected_to_queue():
         return
     
     index = selection[0]
-    if index < len(library):
-        song_path = library[index]
+    if index < len(current_library_view):
+        song_path = current_library_view[index]
         if song_path not in playlist:
             playlist.append(song_path)
             save_playlist()
@@ -1091,9 +1113,17 @@ def start_keep_alive():
 library_frame = LabelFrame(root, text="📚 Library") # Updated text
 library_frame.pack(pady=5, padx=10, fill=BOTH)
 
+# --- NEW SEARCH BAR ---
+search_frame = Frame(library_frame)
+search_frame.pack(fill=X, padx=5, pady=(5,0))
+Label(search_frame, text="🔍").pack(side=LEFT)
+search_entry = Entry(search_frame, textvariable=search_var, width=50)
+search_entry.pack(side=LEFT, fill=X, expand=True, padx=(5,0))
+# --- END SEARCH BAR ---
+
 # Create a sub-frame to hold listbox and button
 lib_list_frame = Frame(library_frame)
-lib_list_frame.pack(pady=5, padx=5, fill=X)
+
 
 playlist_box = Listbox(lib_list_frame, width=52, height=8) # Slightly reduced width
 playlist_box.pack(side=LEFT, fill=BOTH, expand=True)
@@ -1182,7 +1212,7 @@ compare_lib_btn = Button(sync_frame, text="📊 Compare Libraries", command=comp
 compare_lib_btn.pack(side=LEFT, padx=5)
 
 # Initialize the app with saved data
-refresh_library_view()
+update_library_view()
 
 # Load the last playlist state
 saved_playlist, saved_index = load_saved_playlist()
@@ -1192,5 +1222,13 @@ if saved_playlist:
     refresh_queue_view()
     update_status("Loaded previous session")
 
+
+update_status("Loaded previous session")
+
+# --- NEW: BIND SEARCH VAR ---
+search_var.trace_add("write", update_library_view)
+# --- END BIND ---
+
 check_song_end()
 root.mainloop()
+
