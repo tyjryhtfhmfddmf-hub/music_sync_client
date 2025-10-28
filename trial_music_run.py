@@ -23,12 +23,6 @@ root.geometry("500x800")
 root.resizable(False, False)
 
 
-
-playlist = []
-library = update_library_view()
-current_library_view = []
-
-
 # ---------------------------------------
 # CONFIGURATION
 # ---------------------------------------
@@ -485,6 +479,10 @@ except FileNotFoundError:
     pygame.mixer.music.set_volume(0.7)
     volume_before_mute = 0.7
 
+
+playlist = []
+library = load_library()
+current_library_view = [] # <-- NEW
 
 # ---------------------------------------
 # SONG END DETECTION
