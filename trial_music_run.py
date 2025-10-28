@@ -50,7 +50,8 @@ is_host = False
 # HELPER FUNCTIONS
 # ---------------------------------------
 
-def :
+
+def load_library():
     if os.path.exists(LIBRARY_FILE):
         with open(LIBRARY_FILE, "r", encoding="utf-8") as f:
             try:
