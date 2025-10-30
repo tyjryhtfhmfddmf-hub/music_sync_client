@@ -17,7 +17,7 @@ from tkinter import simpledialog, ttk
 # ROOT WINDOW
 # -----------------------------
 root = TkinterDnD.Tk()
-search_var = StringVar(root
+search_var = StringVar(root)
 root.title("Music Sync App")
 search_var = StringVar(root) # <-- NEW
 root.geometry("500x800")
