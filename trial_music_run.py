@@ -17,6 +17,7 @@ from tkinter import simpledialog, ttk
 # ROOT WINDOW
 # -----------------------------
 root = TkinterDnD.Tk()
+search_var = StringVar(root
 root.title("Music Sync App")
 search_var = StringVar(root) # <-- NEW
 root.geometry("500x800")
@@ -168,7 +169,7 @@ def on_library_double_click(event):
     
     index = selection[0]
     if index < len(current_library_view):
-        song_path = current_library_view[index]
+        song_path = current_library_view[index] # <-- THIS IS THE FIX
         if song_path not in playlist:
             playlist.append(song_path)
             save_playlist()
@@ -176,7 +177,6 @@ def on_library_double_click(event):
             update_status(f"Added to queue: {os.path.basename(song_path)}")
         else:
             update_status(f"Already in queue: {os.path.basename(song_path)}")
-
 
 
 def add_selected_to_queue():
@@ -188,7 +188,7 @@ def add_selected_to_queue():
     
     index = selection[0]
     if index < len(current_library_view):
-        song_path = current_library_view[index]
+        song_path = current_library_view[index] # <-- THIS IS THE FIX
         if song_path not in playlist:
             playlist.append(song_path)
             save_playlist()
@@ -196,7 +196,6 @@ def add_selected_to_queue():
             update_status(f"Added to queue: {os.path.basename(song_path)}")
         else:
             update_status(f"Already in queue: {os.path.basename(song_path)}")
-
 
 def save_current_as_playlist():
     if not playlist:
@@ -1100,6 +1099,7 @@ def start_keep_alive():
     threading.Thread(target=keep_alive, daemon=True).start()
 
 
+
 # ---------------------------------------
 # TKINTER UI
 # ---------------------------------------
@@ -1109,7 +1109,7 @@ def start_keep_alive():
 # ---------------------------------------
 
 # Library Section
-library_frame = LabelFrame(root, text="📚 Library") # Updated text
+library_frame = LabelFrame(root, text="📚 Library")
 library_frame.pack(pady=5, padx=10, fill=BOTH)
 
 # --- NEW SEARCH BAR ---
@@ -1122,10 +1122,17 @@ search_entry.pack(side=LEFT, fill=X, expand=True, padx=(5,0))
 
 # Create a sub-frame to hold listbox and button
 lib_list_frame = Frame(library_frame)
+lib_list_frame.pack(pady=5, padx=5, fill=X)
 
+# --- NEW SCROLLBAR ---
+lib_scrollbar = Scrollbar(lib_list_frame, orient=VERTICAL)
+playlist_box = Listbox(lib_list_frame, width=50, height=8, yscrollcommand=lib_scrollbar.set)
+lib_scrollbar.config(command=playlist_box.yview)
 
-playlist_box = Listbox(lib_list_frame, width=52, height=8) # Slightly reduced width
+lib_scrollbar.pack(side=RIGHT, fill=Y)
 playlist_box.pack(side=LEFT, fill=BOTH, expand=True)
+# --- END SCROLLBAR ---
+
 playlist_box.bind("<Double-Button-1>", on_library_double_click)
 
 # Add a frame for the add button
@@ -1134,6 +1141,8 @@ lib_btn_frame.pack(side=LEFT, fill=Y, padx=(5,0))
 
 add_to_queue_btn = Button(lib_btn_frame, text="✚", command=add_selected_to_queue, font=("Arial", 16), width=2)
 add_to_queue_btn.pack(anchor="center", expand=True)
+
+
 
 top_frame = Frame(root)
 top_frame.pack()
@@ -1211,7 +1220,7 @@ compare_lib_btn = Button(sync_frame, text="📊 Compare Libraries", command=comp
 compare_lib_btn.pack(side=LEFT, padx=5)
 
 # Initialize the app with saved data
-update_library_view()
+update_library_view() # <-- Use new name
 
 # Load the last playlist state
 saved_playlist, saved_index = load_saved_playlist()
@@ -1221,12 +1230,9 @@ if saved_playlist:
     refresh_queue_view()
     update_status("Loaded previous session")
 
-
-update_status("Loaded previous session")
-
-# --- NEW: BIND SEARCH VAR ---
+# --- ADD THIS LINE ---
+# This makes the search bar update the list every time you type
 search_var.trace_add("write", update_library_view)
-# --- END BIND ---
 
 check_song_end()
 root.mainloop()
